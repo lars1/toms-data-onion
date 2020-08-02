@@ -1,0 +1,38 @@
+offset (byte+bits)   #bits   item
+0+0                  4       version
+0+4                  4       IHL
+1+0                  8       TOS
+2+0                  16      total length
+4+0                  16      identification
+6+0                  3?      flags
+6+3 ?                13?     fragment offset
+8+0                  8       TTL
+9+0                  8       protocol
+10+0                 16      header checksum
+12+0                 32      source addr
+16+0                 32      dest addr
+20+0                         OPTIONS, DATA
+
+header fields are big endian.
+So eg Version is in most significant bits of the first byte.
+
+Version = 4
+
+IHL = Internet header length in 32 bit words (4 bytes). IHL = 5 --> header is 20 bytes big.
+
+total length = total header + data size in bytes.
+
+protocol = should be 17 (UDP)
+
+
+header checksum: 
+
+If there is no corruption, the result of summing the entire IP header, including checksum, should be zero.
+
+Validating the checksum:
+Calculate sum of every 16 bit value in the header.
+The resulting value can be greater than 0xffff. 
+Take the carry (values greater than 0xffff) and add to the checksum. Keep doing it until the checksum is only 16 bits in size.
+The result should be 0xffff, which when all bits are flipped, is zero. This indicates there are no transmission errors of the header.
+
+
